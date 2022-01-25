@@ -2,8 +2,9 @@ const userRouter = require("express").Router();
 const userController = require("../controllers/userController");
 const authentication = require("../middlewares/authentication");
 const mutualAuthorization = require("../middlewares/authorization");
+const emailVerification = require("../middlewares/emailAuthorization");
 
-userRouter.post("/register", userController.postRegister); //register user
+userRouter.post("/register", emailVerification, userController.postRegister); //register user
 userRouter.post("/login", userController.login); //login user
 userRouter.use(authentication);
 userRouter.get("/mutualList", userController.getMutualList);

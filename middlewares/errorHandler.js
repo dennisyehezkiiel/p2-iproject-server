@@ -1,4 +1,5 @@
 const errorHandler = (err, req, res, next) => {
+  // console.log(err);
   let statusCode = 500;
   let errorMsg = "Internal Server Error";
 
@@ -26,6 +27,9 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name === "AccessDenied") {
     statusCode = 403;
     errorMsg = "Access denied";
+  } else if (err.name === "EmailNotFound") {
+    statusCode = 404;
+    errorMsg = "Email address not found";
   }
 
   res.status(statusCode).json(errorMsg);
