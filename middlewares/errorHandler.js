@@ -30,6 +30,9 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name === "EmailNotFound") {
     statusCode = 404;
     errorMsg = "Email address not found";
+  } else if (err.name === "PhoneNotFound") {
+    statusCode = 404;
+    errorMsg = "Phone number not found";
   }
 
   res.status(statusCode).json(errorMsg);
