@@ -13,8 +13,10 @@ const registAuthorization = async (req, res, next) => {
     );
     if (verifyPhoneNumber.data.valid === false) {
       throw { name: "PhoneNotFound" };
-    }
-    if (verify.data.mx_found !== true && verify.data.smtp_check !== true) {
+    } else if (
+      verify.data.mx_found !== true &&
+      verify.data.smtp_check !== true
+    ) {
       throw { name: "EmailNotFound" };
     } else {
       next();
