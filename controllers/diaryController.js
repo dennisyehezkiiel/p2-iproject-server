@@ -39,6 +39,18 @@ class DiaryController {
             [Op.eq]: findTag,
           },
         };
+      } else if (findTag && findTitle) {
+        findQuery.where = {
+          [Op.and]: [
+            { UserId: req.currentUser.id },
+            {
+              [Op.or]: [
+                { title: { [Op.iLike]: `%${findTitle}%` } },
+                { TagId: { [Op.eq]: findTag } },
+              ],
+            },
+          ],
+        };
       } else {
         findQuery.where = {
           UserId: req.currentUser.id,
