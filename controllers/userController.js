@@ -56,10 +56,24 @@ class UserController {
   }
   static async postMutual(req, res, next) {
     try {
-      const mutualId = req.params.mutualId;
+      const mutualId = +req.params.mutualId;
       const findMutual = await User.findByPk(mutualId);
       if (!findMutual) {
         throw { name: "UserNotFound" };
+      }
+      if (req.currentUser.id === mutualId) {
+        throw { name: "AccessDenied" };
+      }
+      const forbiddenMutual = await Mutual.findAll({
+        where: {
+          [Op.and]: [
+            { firstUser: req.currentUser.id },
+            { secondUser: mutualId },
+          ],
+        },
+      });
+      if (forbiddenMutual.length !== 0) {
+        throw { name: "AccessDenied" };
       }
       const addMutual = await Mutual.create({
         firstUser: req.currentUser.id,
@@ -83,7 +97,15 @@ class UserController {
       if (!findMutual) {
         throw { name: "UserNotFound" };
       }
+      if (req.currentUser === mutualId) {
+        throw { name: "AccessDenied" };
+      }
       const changeStatus = { status: "Mutuals" };
+      await Mutual.create({
+        firstUser: req.currentUser.id,
+        secondUser: mutualId,
+        status: "Mutuals",
+      });
       await Mutual.update(changeStatus, {
         where: { secondUser: req.currentUser.id },
       });
@@ -114,25 +136,16 @@ class UserController {
   }
   static async getMutualList(req, res, next) {
     try {
-      const id = req.params.userId;
-      const findUser = await User.findByPk(id);
-      if (!findUser) {
-        throw { name: "UserNotFound" };
-      }
       const mutualList = await Mutual.findAll({
         where: {
-          [Op.and]: [
-            { status: "Mutuals" },
-            { [Op.or]: [{ firstUser: id }, { secondUser: id }] },
-          ],
+          firstUser: {
+            [Op.eq]: req.currentUser.id,
+          },
         },
-        include: {
-          model: User,
-        },
+        include: [{ model: User, as: "user2" }],
       });
       res.status(200).json(mutualList);
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }

@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Mutual.belongsTo(models.User, { foreignKey: "firstUser" });
-      Mutual.belongsTo(models.User, { foreignKey: "secondUser" });
+      Mutual.belongsTo(models.User, { foreignKey: "firstUser", as: "user1" });
+      Mutual.belongsTo(models.User, { foreignKey: "secondUser", as: "user2" });
     }
   }
   Mutual.init(
