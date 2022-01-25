@@ -7,6 +7,7 @@ const registAuthorization = require("../middlewares/registAuthorization");
 userRouter.post("/register", registAuthorization, userController.postRegister); //register user
 userRouter.post("/login", userController.login); //login user
 userRouter.use(authentication);
+userRouter.get("/findUser", userController.findUser);
 userRouter.get("/mutualList", userController.getMutualList);
 userRouter.get("/notification/:userId", userController.notification); //tampilin notifikasi khusus untuk user dengan id = userId
 userRouter.get("/profileDetail/:userId", userController.profileDetail); //tampilin profile user dengan id = userId

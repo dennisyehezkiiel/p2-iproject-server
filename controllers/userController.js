@@ -149,6 +149,27 @@ class UserController {
       next(err);
     }
   }
+  static async findUser(req, res, next) {
+    try {
+      const queryUser = { attributes: { exclude: ["password"] } };
+      const usernameQuery = req.query.username;
+      if (usernameQuery) {
+        queryUser.where = {
+          username: {
+            [Op.iLike]: `%${usernameQuery}%`,
+          },
+        };
+      }
+      const findUser = await User.findAll(queryUser);
+      if (!findUser) {
+        throw { name: "UserNotFound" };
+      }
+      res.status(200).json(findUser);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
 }
 
 module.exports = UserController;
