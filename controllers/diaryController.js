@@ -89,6 +89,16 @@ class DiaryController {
       next(err);
     }
   }
+  static async getDiaryById(req, res, next) {
+    try {
+      const diaryId = req.params.id;
+      const getDiary = await Diary.findAll({ where: { id: diaryId } });
+      res.status(200).json(getDiary);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
 }
 
 module.exports = DiaryController;
