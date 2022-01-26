@@ -57,6 +57,9 @@ class DiaryController {
         };
       }
       const diary = await Diary.findAll(findQuery);
+      if (diary.length === 0) {
+        throw { name: "NotFound" };
+      }
       res.status(200).json(diary);
     } catch (err) {
       console.log(err);
@@ -65,14 +68,14 @@ class DiaryController {
   }
   static async updateDiary(req, res, next) {
     try {
-      const { title, stroy, imageUrl, TagId } = req.body;
+      const { title, story, imageUrl, TagId } = req.body;
       const diaryId = req.params.id;
       const findDiary = await Diary.findByPk(diaryId);
       if (!findDiary) {
         throw { name: "NotFound" };
       }
       const updateDiary = await Diary.update(
-        { title, stroy, imageUrl, TagId },
+        { title, story, imageUrl, TagId },
         { where: { id: diaryId }, returning: true }
       );
       res.status(200).json(updateDiary);
