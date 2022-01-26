@@ -22,35 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", router);
 app.use(errorHandler);
 
-let userArr = [];
-let chatArr = [];
-
-io.on("connection", (socket) => {
-  console.log("A user connected", socket.id);
-
-  socket.on("diconnect", () => {
-    console.log("A user disconnected");
-  });
-
-  socket.on("customEventFromClient", (payload) => {
-    console.log("payload:", payload);
-
-    socket.emit("customEventFromServer", "from server");
-  });
-
-  socket.on("setUsername", (payload) => {
-    userArr.push({
-      username: payload,
-      status: "online",
-    });
-  });
-  console.log(userArr);
-
-  socket.on("sendMessageToServer", (payload) => {
-    chatArr.push(payload);
-    io.emit("receiveMessageFromServer", chatArr);
-  });
-});
+require("./consumer")(io);
 
 httpServer.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

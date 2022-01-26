@@ -1,4 +1,4 @@
-const { User, Mutual, Notification } = require("../models");
+const { User, Mutual, Notification, Message } = require("../models");
 const { createToken } = require("../helpers/jwt");
 const { compareHash } = require("../helpers/bcrypt");
 const { Op } = require("sequelize");
@@ -174,6 +174,14 @@ class UserController {
       res.status(200).json(findUser);
     } catch (err) {
       console.log(err);
+      next(err);
+    }
+  }
+  static async fetchChat(req, res, next) {
+    try {
+      const chats = await Message.findAll();
+      res.status(200).json(chats);
+    } catch (err) {
       next(err);
     }
   }
