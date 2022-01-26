@@ -151,6 +151,7 @@ class UserController {
   }
   static async findUser(req, res, next) {
     try {
+      console.log(">>>>>>>>>>masuk");
       const queryUser = { attributes: { exclude: ["password"] } };
       const usernameQuery = req.query.username;
       if (usernameQuery) {
