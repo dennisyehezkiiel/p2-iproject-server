@@ -81,6 +81,14 @@ class DiaryController {
       next(err);
     }
   }
+  static async getTag(req, res, next) {
+    try {
+      const getAllTag = await Tag.findAll();
+      res.status(200).json(getAllTag);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = DiaryController;
