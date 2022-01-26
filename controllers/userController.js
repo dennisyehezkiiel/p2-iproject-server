@@ -35,7 +35,11 @@ class UserController {
         id: login.id,
       };
       const accessToken = createToken(payload);
-      res.status(200).json({ access_token: accessToken, userId: payload.id });
+      res.status(200).json({
+        access_token: accessToken,
+        userId: payload.id,
+        userName: login.username,
+      });
     } catch (err) {
       next(err);
     }
