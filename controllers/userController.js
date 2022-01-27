@@ -155,7 +155,10 @@ class UserController {
   }
   static async findUser(req, res, next) {
     try {
-      const queryUser = { attributes: { exclude: ["password"] } };
+      const queryUser = {
+        include: { model: Mutual },
+        attributes: { exclude: ["password"] },
+      };
       const usernameQuery = req.query.username;
       if (usernameQuery) {
         queryUser.where = {
