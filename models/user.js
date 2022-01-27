@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Mutual, { foreignKey: "secondUser" });
       User.hasMany(models.Notification, { foreignKey: "userFrom" });
       User.hasMany(models.Notification, { foreignKey: "userId" });
+      User.belongsToMany(models.UserStatus, { through: models.Message });
     }
   }
   User.init(

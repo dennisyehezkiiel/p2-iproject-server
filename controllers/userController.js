@@ -1,6 +1,7 @@
-const { User, Mutual, Notification } = require("../models");
+const { User, Mutual, Notification, Message } = require("../models");
 const { createToken } = require("../helpers/jwt");
 const { compareHash } = require("../helpers/bcrypt");
+const { Op } = require("sequelize");
 
 class UserController {
   static async postRegister(req, res, next) {
@@ -34,7 +35,11 @@ class UserController {
         id: login.id,
       };
       const accessToken = createToken(payload);
-      res.status(200).json({ access_token: accessToken });
+      res.status(200).json({
+        access_token: accessToken,
+        userId: payload.id,
+        userName: login.username,
+      });
     } catch (err) {
       next(err);
     }
@@ -55,10 +60,24 @@ class UserController {
   }
   static async postMutual(req, res, next) {
     try {
-      const mutualId = req.params.mutualId;
+      const mutualId = +req.params.mutualId;
       const findMutual = await User.findByPk(mutualId);
       if (!findMutual) {
         throw { name: "UserNotFound" };
+      }
+      if (req.currentUser.id === mutualId) {
+        throw { name: "AccessDenied" };
+      }
+      const forbiddenMutual = await Mutual.findAll({
+        where: {
+          [Op.and]: [
+            { firstUser: req.currentUser.id },
+            { secondUser: mutualId },
+          ],
+        },
+      });
+      if (forbiddenMutual.length !== 0) {
+        throw { name: "AccessDenied" };
       }
       const addMutual = await Mutual.create({
         firstUser: req.currentUser.id,
@@ -82,7 +101,15 @@ class UserController {
       if (!findMutual) {
         throw { name: "UserNotFound" };
       }
+      if (req.currentUser === mutualId) {
+        throw { name: "AccessDenied" };
+      }
       const changeStatus = { status: "Mutuals" };
+      await Mutual.create({
+        firstUser: req.currentUser.id,
+        secondUser: mutualId,
+        status: "Mutuals",
+      });
       await Mutual.update(changeStatus, {
         where: { secondUser: req.currentUser.id },
       });
@@ -107,6 +134,56 @@ class UserController {
         where: { userId: id },
       });
       res.status(200).json(findNotification);
+    } catch (err) {
+      next(err);
+    }
+  }
+  static async getMutualList(req, res, next) {
+    try {
+      const mutualList = await Mutual.findAll({
+        where: {
+          firstUser: {
+            [Op.eq]: req.currentUser.id,
+          },
+        },
+        include: [{ model: User, as: "user2" }],
+      });
+      res.status(200).json(mutualList);
+    } catch (err) {
+      next(err);
+    }
+  }
+  static async findUser(req, res, next) {
+    try {
+      const queryUser = {
+        include: { model: Mutual },
+        attributes: { exclude: ["password"] },
+      };
+      const usernameQuery = req.query.username;
+      if (usernameQuery) {
+        queryUser.where = {
+          username: {
+            [Op.iLike]: `%${usernameQuery}%`,
+          },
+        };
+      }
+      if (!usernameQuery) {
+        throw { name: "UserNotFound" };
+      }
+      const findUser = await User.findAll(queryUser);
+      if (!findUser) {
+        throw { name: "UserNotFound" };
+      }
+      res.status(200).json(findUser);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
+  static async fetchChat(req, res, next) {
+    try {
+      const chats = await Message.findAll();
+      res.status(200).json(chats);
     } catch (err) {
       next(err);
     }

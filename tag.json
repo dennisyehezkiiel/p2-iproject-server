@@ -1,49 +1,50 @@
 [
-    {
-        "id": "1",
-        "name": "#happiness"
-    },
-    {
-        "id": "2",
-        "name": "#sadness"
-    },
-    {
-        "id": "3",
-        "name": "#fear"
-    },
-    {
-        "id": "4",
-        "name": "#disgust"
-    },{
-        "id": "5",
-        "name": "#anger"
-    },
-    {
-        "id": "6",
-        "name": "#happiness"
-    },
-    {
-        "id": "7",
-        "name": "#suprise"
-    },
-    {
-        "id": "8",
-        "name": "#excitement"
-    },
-    {
-        "id": "9",
-        "name": "#happiness"
-    },
-    {
-        "id": "10",
-        "name": "#satisfication"
-    },
-    {
-        "id": "11",
-        "name": "#embarrassment"
-    },{
-        "id": "12",
-        "name": "#amusement"
-    }
-
+  {
+    "id": "1",
+    "name": "happiness"
+  },
+  {
+    "id": "2",
+    "name": "sadness"
+  },
+  {
+    "id": "3",
+    "name": "fear"
+  },
+  {
+    "id": "4",
+    "name": "disgust"
+  },
+  {
+    "id": "5",
+    "name": "anger"
+  },
+  {
+    "id": "6",
+    "name": "happiness"
+  },
+  {
+    "id": "7",
+    "name": "suprise"
+  },
+  {
+    "id": "8",
+    "name": "excitement"
+  },
+  {
+    "id": "9",
+    "name": "happiness"
+  },
+  {
+    "id": "10",
+    "name": "satisfication"
+  },
+  {
+    "id": "11",
+    "name": "embarrassment"
+  },
+  {
+    "id": "12",
+    "name": "amusement"
+  }
 ]
